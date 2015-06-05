@@ -1,12 +1,15 @@
 {
   "name": "grunt-xrm",
   "description": "Grunt build task to continuously scaffold an xrm platform",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "BclEx",
     "url": "https://github.com/BclEx"
   },
-  "repository": "https://github.com/BclEx/grunt-xrm",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BclEx/grunt-xrm"
+  },
   "license": "MIT",
   "main": "Gruntfile.js",
   "engines": {

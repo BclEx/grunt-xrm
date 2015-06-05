@@ -8,44 +8,38 @@
 
 'use strict';
 
+// External libs.
+var path = require('path');
+
 module.exports = function (grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
+    // Internal lib.
+    var angularMpa = require('./lib/xrm-angular-mpa').init(grunt);
+    var dotnetMvc = require('./lib/xrm-dotnet-mvc').init(grunt);
+    var sqlserver = require('./lib/xrm-sqlserver').init(grunt);
 
-  grunt.registerMultiTask('xrm', 'test', function () {
+    this.process = function (entity, dest) {
+        angularMpa.process(entity, dest);
+        dotnetMvc.process(entity, dest);
+        sqlserver.process(entity, dest);
+    };
 
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
+    var self = this;
+    grunt.registerMultiTask('xrm', 'test', function () {
+
+        // Merge task-specific and/or target-specific options with these defaults.
+        var options = this.options({
+            punctuation: '.',
+        });
+
+        // Iterate over all specified file groups.
+        this.files.forEach(function (file) {
+            file.src.filter(function (filepath) { return (grunt.file.exists(filepath)); }).forEach(function (filepath) {
+                // Read file source.
+                self.process(grunt.file.readJSON(filepath), file.dest);
+                // Print a success message.
+                grunt.log.writeln('File "' + path.basename(filepath) + '" processed.');
+            });
+        });
     });
-
-    // Iterate over all specified file groups.
-    this.files.forEach(function (file) {
-      // Concat specified files.
-      var src = file.src.filter(function (filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function (filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
-
-      // Handle options.
-      src += options.punctuation;
-
-      // Write the destination file.
-      grunt.file.write(file.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln('File "' + file.dest + '" created.');
-    });
-  });
-
 };
