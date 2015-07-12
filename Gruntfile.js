@@ -8,11 +8,7 @@
 
 'use strict';
 
-module.exports = function(grunt) {
-  // load all npm grunt tasks
-  require('load-grunt-tasks')(grunt);
-
-  // Project configuration.
+module.exports = function (grunt) {
   grunt.initConfig({
     jshint: {
       all: [
@@ -34,21 +30,21 @@ module.exports = function(grunt) {
     // Configuration to be run (and then tested).
     xrm: {
       default_options: {
-        options: {
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
+        //   options: {
+        //   },
+        //   files: {
+        //     'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
+        //   }
       },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
-      }
+      // custom_options: {
+      //   options: {
+      //     separator: ': ',
+      //     punctuation: ' !!!'
+      //   },
+      //   files: {
+      //     'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
+      //   }
+      // }
     },
 
     // Unit tests.
@@ -58,14 +54,11 @@ module.exports = function(grunt) {
 
   });
 
-  // Actually load this plugin's task(s).
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-nodeunit');
   grunt.loadTasks('tasks');
 
-  // Whenever the "test" task is run, first clean the "tmp" dir, then run this
-  // plugin's task(s), then test the result.
   grunt.registerTask('test', ['clean', 'xrm', 'nodeunit']);
-
-  // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);
-
 };

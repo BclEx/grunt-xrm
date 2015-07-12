@@ -10,19 +10,9 @@
 
 // External libs.
 var path = require('path');
+var yeoman = require('yeoman-generator');
 
 module.exports = function (grunt) {
-
-    // Internal lib.
-    var angularMpa = require('./lib/xrm-angular-mpa').init(grunt);
-    var dotnetMvc = require('./lib/xrm-dotnet-mvc').init(grunt);
-    var sqlserver = require('./lib/xrm-sqlserver').init(grunt);
-
-    this.process = function (entity, dest) {
-        angularMpa.process(entity, dest);
-        dotnetMvc.process(entity, dest);
-        sqlserver.process(entity, dest);
-    };
 
     var self = this;
     grunt.registerMultiTask('xrm', 'test', function () {
