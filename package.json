@@ -19,7 +19,6 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "yeoman-generator": "^0.20.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -28,7 +27,9 @@
     "grunt-contrib-internal": "^0.4.12",
     "grunt-contrib-jshint": "^0.11.0",
     "grunt-contrib-nodeunit": "^0.4.0",
-    "jshint-stylish": "^2.0.0"
+    "jshint-stylish": "^2.0.0",
+    "generator-xrm": "^1.0.4",
+    "yeoman-environment": "^1.2.7"
   },
   "peerDependencies": {
     "grunt": ">=0.4.0"
