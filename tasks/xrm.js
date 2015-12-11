@@ -17,7 +17,6 @@ var Xrm = module.exports = function Xrm(grunt) {
   grunt.registerMultiTask('xrm', 'runs xrm', function () {
     this.log = grunt.log;
     this.env = require('yeoman-environment').createEnv();
-    this.env.register(require.resolve('generator-xrm'), 'xrm:app', 'xrm:app');
     this.env.on('error', function (err) {
       console.error(false ? err.stack : err.message);
     });
@@ -34,12 +33,15 @@ var Xrm = module.exports = function Xrm(grunt) {
 
     var self = this;
     
-    function process(file, ctx, dest, options) {
+    function process(ctx, name, dest, options) {
+      debug('Running ' + name);
       options['skip-install'] = true;
-      this.env.run(['xrm', ctx, dest], options, function (err) {
+      ctx.name = name;
+      options.dest = dest;
+      this.env.run(['xrm', ctx], options, function (err) {
         //this.async2();
-        // Print a success message.
-        self.log.writeln('File "' + file + '" processed.');
+        debug('Finished ' + name + ' processing');
+        self.log.writeln('File "' + name + '" processed.');
       });
     };
     
@@ -70,25 +72,28 @@ var Xrm = module.exports = function Xrm(grunt) {
       });
     }
     
-    function addInQueue(filepath) {
+    function addInQueue(filePath, dest) {
       // Read file source.
-      var file = path.basename(filepath);
-      var ctx = eval('[' + grunt.file.read(filepath) + ']')[0];
-      var args = [file, ctx, file.dest, options];
+      var name = path.basename(filePath, '.json');
+      var ctx = eval('[' + grunt.file.read(filePath) + ']')[0];
+      var args = [ctx, name, dest, options];
       //addMethod(process, args, file);
+      debug('Queueing ' + name);
       process.apply(self, args);
     }
 
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-        punctuation: '.',
+        punctuation: ';',
     });
     
     // Iterate over all specified file groups.
-    this.files.forEach(function (file) {
-        file.src.filter(function (filepath) { return grunt.file.exists(filepath); })
-          .forEach(addInQueue);
-    });
+    this.env.lookup(function() {
+      this.files.forEach(function (file) {
+          file.src.filter(function (filePath) { return grunt.file.exists(filePath); })
+            .forEach(function(filePath) { addInQueue(filePath, file.dest); });
+      });      
+    }.bind(this));
   });
 };
 
