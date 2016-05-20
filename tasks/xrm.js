@@ -74,7 +74,7 @@ var Xrm = module.exports = function Xrm(grunt) {
     
     function addInQueue(filePath, dest) {
       // Read file source.
-      var name = path.basename(filePath, '.json');
+      var name = path.basename(filePath, '.js');
       var ctx = eval('[' + grunt.file.read(filePath) + ']')[0];
       var args = [ctx, name, dest, options];
       //addMethod(process, args, file);
