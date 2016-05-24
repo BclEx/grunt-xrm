@@ -26,13 +26,13 @@ var Xrm = module.exports = function Xrm(grunt) {
     this.runLoop.once('end', function () {
       done();
     }.bind(this));
-    
+
     // Each composed generator might set listeners on these shared resources. Let's make sure
     // Node won't complain about event listeners leaks.
     this.runLoop.setMaxListeners(0);
 
     var self = this;
-    
+
     function process(ctx, name, dest, options) {
       debug('Running ' + name);
       options['skip-install'] = true;
@@ -44,7 +44,7 @@ var Xrm = module.exports = function Xrm(grunt) {
         self.log.writeln('File "' + name + '" processed.');
       });
     };
-    
+
     function addMethod(method, args, methodName, queueName) {
       queueName = queueName || 'default';
       debug('Queueing ' + methodName + ' in ' + queueName);
@@ -53,13 +53,13 @@ var Xrm = module.exports = function Xrm(grunt) {
         var done = function (err) {
           completed();
         };
-    
+
         var running = false;
         self.async2 = function () {
           running = true;
           return done;
         };
-    
+
         try {
           method.apply(self, args);
           if (!running) {
@@ -71,28 +71,37 @@ var Xrm = module.exports = function Xrm(grunt) {
         }
       });
     }
-    
+
     function addInQueue(filePath, dest) {
       // Read file source.
-      var name = path.basename(filePath, '.js');
+      var nameParts = getObjectNameParts(path.basename(filePath, '.js'), '');
       var ctx = eval('[' + grunt.file.read(filePath) + ']')[0];
-      var args = [ctx, name, dest, options];
+      ctx.schemaName = nameParts[0];
+      var args = [ctx, nameParts[1], dest, options];
       //addMethod(process, args, file);
-      debug('Queueing ' + name);
+      debug('Queueing ' + nameParts[1]);
       process.apply(self, args);
+    }
+
+    function getObjectNameParts(objectName) {
+      var pieces = objectName.split('.');
+      if (!pieces || pieces.length === 1) {
+        return [null, pieces ? pieces[0] : objectName];
+      }
+      return [pieces[0], pieces[1]];
     }
 
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-        punctuation: ';',
+      punctuation: ';',
     });
-    
+
     // Iterate over all specified file groups.
-    this.env.lookup(function() {
+    this.env.lookup(function () {
       this.files.forEach(function (file) {
-          file.src.filter(function (filePath) { return grunt.file.exists(filePath); })
-            .forEach(function(filePath) { addInQueue(filePath, file.dest); });
-      });      
+        file.src.filter(function (filePath) { return grunt.file.exists(filePath); })
+          .forEach(function (filePath) { addInQueue(filePath, file.dest); });
+      });
     }.bind(this));
   });
 };
