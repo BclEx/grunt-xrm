@@ -83,14 +83,6 @@ var Xrm = module.exports = function Xrm(grunt) {
       process.apply(self, args);
     }
 
-    function getObjectNameParts(objectName) {
-      var pieces = objectName.split('.');
-      if (!pieces || pieces.length === 1) {
-        return [null, pieces ? pieces[0] : objectName];
-      }
-      return [pieces[0], pieces[1]];
-    }
-
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
       punctuation: ';',
@@ -105,6 +97,14 @@ var Xrm = module.exports = function Xrm(grunt) {
     }.bind(this));
   });
 };
+
+function getObjectNameParts(objectName) {
+    var pieces = objectName.split('.');
+    if (!pieces || pieces.length === 1) {
+        return [null, pieces ? pieces[0] : objectName];
+    }
+    return [pieces[0], pieces[1]];
+}
 
 Xrm.queues = [
   'default',
