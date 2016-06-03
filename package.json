@@ -1,7 +1,7 @@
 {
   "name": "grunt-xrm",
   "description": "Grunt build task to continuously scaffold an xrm platform",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": {
     "name": "BclEx",
     "url": "https://github.com/BclEx"
