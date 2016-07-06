@@ -76,6 +76,7 @@ var Xrm = module.exports = function Xrm(grunt) {
       // Read file source.
       var nameParts = getObjectNameParts(path.basename(filePath, '.js'), '');
       var ctx = eval('[' + grunt.file.read(filePath) + ']')[0];
+      ctx.searchPaths = [path.dirname(filePath)];
       ctx.schemaName = nameParts[0];
       var args = [ctx, nameParts[1], dest, options];
       //addMethod(process, args, file);
@@ -101,7 +102,7 @@ var Xrm = module.exports = function Xrm(grunt) {
 function getObjectNameParts(objectName) {
     var pieces = objectName.split('.');
     if (!pieces || pieces.length === 1) {
-        return [null, pieces ? pieces[0] : objectName];
+        return ['dbo', pieces ? pieces[0] : objectName];
     }
     return [pieces[0], pieces[1]];
 }
